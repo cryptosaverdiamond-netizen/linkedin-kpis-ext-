@@ -94,8 +94,25 @@ async function extractKPIData() {
 }
 
 function extractKPIValue(kpiKey) {
-  const selectorList = selectors.kpi_selectors[kpiKey];
+  // Stratégie basée sur le contexte textuel pour différencier les KPI
+  const contextKeywords = {
+    'global_posts_impressions_last_7d': ['impression', 'vue', 'reach', 'portée', '7 jour', '7 day'],
+    'followers': ['follower', 'abonné', 'connection', 'connexion', 'réseau'],
+    'profile_views_90d': ['vue de profil', 'profile view', 'profil vu', '90 jour', '90 day'],
+    'search_appearances_last_week': ['recherche', 'search', 'apparition', 'appearance', 'découverte', 'semaine', 'week']
+  };
   
+  const keywords = contextKeywords[kpiKey] || [];
+  
+  // D'abord essayer avec le contexte
+  const valueWithContext = extractKPIWithContext(kpiKey, keywords);
+  if (valueWithContext !== null) {
+    console.debug(`[Dashboard] ${kpiKey} trouvé avec contexte:`, valueWithContext);
+    return valueWithContext;
+  }
+  
+  // Ensuite essayer les sélecteurs classiques
+  const selectorList = selectors.kpi_selectors[kpiKey];
   for (const selector of selectorList) {
     try {
       const element = document.querySelector(selector);
@@ -120,6 +137,32 @@ function extractKPIValue(kpiKey) {
   
   console.warn(`[Dashboard] ${kpiKey} non trouvé`);
   return 0;
+}
+
+function extractKPIWithContext(kpiKey, keywords) {
+  // Chercher tous les éléments avec des nombres
+  const numberElements = document.querySelectorAll('p.text-body-large-bold, .text-body-large-bold');
+  
+  for (const element of numberElements) {
+    const value = extractNumericValue(element);
+    if (value === null || value === 0) continue;
+    
+    // Analyser le contexte autour de l'élément
+    const container = element.closest('div, section, article') || element.parentElement;
+    if (!container) continue;
+    
+    const contextText = container.textContent.toLowerCase();
+    
+    // Vérifier si le contexte contient les mots-clés du KPI
+    const hasKeyword = keywords.some(keyword => contextText.includes(keyword.toLowerCase()));
+    
+    if (hasKeyword) {
+      console.debug(`[Dashboard] KPI ${kpiKey} trouvé par contexte:`, value, contextText.substring(0, 100));
+      return value;
+    }
+  }
+  
+  return null;
 }
 
 function extractNumericValue(element) {
