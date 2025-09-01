@@ -147,6 +147,9 @@ const Normalize = {
 // Export pour modules
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = Normalize;
-} else {
+} else if (typeof window !== 'undefined') {
   window.Normalize = Normalize;
+} else {
+  // Service Worker environment
+  globalThis.Normalize = Normalize;
 }

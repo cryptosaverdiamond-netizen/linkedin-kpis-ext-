@@ -139,6 +139,9 @@ class Transport {
 // Export pour background script
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = Transport;
-} else {
+} else if (typeof window !== 'undefined') {
   window.Transport = Transport;
+} else {
+  // Service Worker environment
+  globalThis.Transport = Transport;
 }
