@@ -326,7 +326,7 @@ function extractCreatedAt(container) {
             const match = textValue.match(pattern);
             if (match) {
               console.debug(`[Posts] Date extraite: "${match[0]}" du texte: "${textValue}"`);
-              return new Date().toISOString(); // Pour l'instant, retourner date actuelle
+              return match[0]; // Retourner juste la date extraite (ex: "1 mois •")
             }
           }
           
