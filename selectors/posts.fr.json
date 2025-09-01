@@ -1,37 +1,31 @@
 {
   "post_selectors": {
     "post_container": [
-      ".feed-shared-update-v2",
-      "[class*='feed-shared-update']",
-      "div[class*='update-components']",
-      "article",
-      "div[id*='ember'][class*='artdeco']",
-      "div.update-components-header"
+      ".feed-shared-update-v2"
     ],
     "post_id": [
       "[data-urn*='urn:li:activity:']",
-      "[data-activity-urn]",
-      "[href*='urn:li:activity:']",
       "div[data-urn]",
       "article[data-urn]",
-      "[id*='urn:li:activity:']"
+      "[href*='urn:li:activity:']",
+      "[id*='urn:li:activity:']",
+      ".feed-shared-update-v2[data-urn]"
     ],
     "created_at": [
+      "[class*=\"date\"]",
+      ".update-components-actor__sub-description",
       "time[datetime]",
       ".update-components-actor__sub-description time",
       "span.update-components-actor__sub-description",
       ".feed-shared-actor__sub-description",
-      "[class*='sub-description']",
-      "time",
-      "span[class*='time']"
+      "time"
     ],
     "impressions": [
       ".social-details-social-counts__reactions-count",
       "span[class*='social-counts']",
       "button[data-reaction-details] span",
       "[class*='impressions']",
-      "[aria-label*='impressions']",
-      "span:contains('impressions')"
+      "[aria-label*='impressions']"
     ],
     "reactions": [
       ".social-details-social-counts__reactions-count",
@@ -42,12 +36,12 @@
       "[class*='social-counts__reactions']"
     ],
     "comments": [
+      ".social-details-social-counts__item.social-details-social-counts__reactions.social-details-social-counts__item--height-two-x",
       ".social-details-social-counts__comments",
       "[class*='comments-count']",
       "button[class*='comment'] span",
       "[aria-label*='commentaires']",
-      "[aria-label*='comments']",
-      ".social-details-social-counts__item--height-two-x"
+      "[aria-label*='comments']"
     ],
     "shares": [
       ".social-details-social-counts__shares",
