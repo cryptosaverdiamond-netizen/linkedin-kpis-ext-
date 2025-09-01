@@ -1,224 +1,139 @@
-# Extension Chrome LinkedIn Data Scraper
+# Extension LinkedIn Data Scraper
 
-Extension Chrome MV3 pour scraper les données LinkedIn et les envoyer vers Google Apps Script.
+Extension Chrome MV3 pour scraper les KPI dashboard et posts LinkedIn (FR uniquement) et les envoyer vers Google Apps Script.
 
-## 🎯 Objectif
+## 🎯 Fonctionnalités
 
-Cette extension scrape **uniquement** 2 pages LinkedIn spécifiques :
-1. **Posts originaux** : `https://www.linkedin.com/in/<slug>/recent-activity/all/`
-2. **Dashboard (KPI daily)** : `https://www.linkedin.com/dashboard/`
+### Dashboard (`/dashboard/`)
+- **Impressions globales** (7 jours)
+- **Followers/Abonnés**  
+- **Vues de profil** (90 jours)
+- **Apparitions dans les recherches** (semaine)
 
-Les données sont transformées selon des contrats stricts et envoyées vers un webhook Google Apps Script.
+### Posts (`/in/<slug>/recent-activity/all/`)
+- **URN des posts** (`urn:li:activity:...`)
+- **Métriques** : réactions, commentaires, republications
+- **Détection automatique des reposts** (ignorés)
+- **Langue** et **taux d'engagement**
 
-## 🏗️ Architecture
+## 🚀 Installation
 
-```
-linkedin-ext/
-├── manifest.json              # Manifest MV3
-├── content.js                 # Router principal
-├── core/
-│   ├── config.js             # Configuration (WEBAPP_URL, SECRET, etc.)
-│   ├── transport.js          # Gestion des envois HTTP
-│   └── background.js         # Service worker
-├── modules/
-│   ├── dashboard.fr.js       # Scraping KPI daily
-│   └── posts.fr.js           # Scraping posts originaux
-├── selectors/
-│   ├── dashboard.fr.json     # Sélecteurs CSS dashboard
-│   └── posts.fr.json         # Sélecteurs CSS posts
-├── schemas/
-│   ├── daily.schema.json     # Validation données daily
-│   └── post.schema.json      # Validation données posts
-└── utils/
-    ├── uuid.js               # Générateur UUIDv4
-    └── normalize.js          # Normalisation données FR
-```
-
-## ⚙️ Configuration
-
-### 1. Configuration requise
-
-Dans `core/config.js`, configurer :
-
+1. **Configuration** : Éditez `core/config.js` avec vos paramètres :
 ```javascript
 const CONFIG = {
-  WEBAPP_URL: "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec",
-  SECRET: "YOUR_SECRET_KEY",
-  COMPANY_ID: "c1",           // ID de votre entreprise
-  TEAM_ID: "t1",             // ID de votre équipe
-  // ... autres paramètres
+  WEBAPP_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
+  SECRET: 'YOUR_SECRET_KEY',
+  COMPANY_ID: 'your_company',
+  TEAM_ID: 'your_team'
 };
 ```
 
-### 2. Installation
+2. **Chargement** : Allez dans `chrome://extensions/`
+   - Activez le "Mode développeur"
+   - Cliquez "Charger l'extension non empaquetée"
+   - Sélectionnez le dossier de l'extension
 
-1. Ouvrir Chrome et aller dans `chrome://extensions/`
-2. Activer le "Mode développeur"
-3. Cliquer "Charger l'extension non empaquetée"
-4. Sélectionner le dossier `linkedin-ext`
+3. **Test** : Allez sur LinkedIn dashboard ou page posts
 
-## 📊 Données collectées
+## 📊 Données envoyées
 
-### Table `daily` (KPI quotidiens)
-
-| Champ | Type | Description |
-|-------|------|-------------|
-| `type` | string | "daily" |
-| `company_id` | string | ID entreprise |
-| `team_id` | string | ID équipe |
-| `user_id` | string | Slug LinkedIn (ex: `maxime-boué-896573223`) |
-| `date_yyyy_mm_dd` | string | Date YYYY-MM-DD (Europe/Paris) |
-| `global_posts_impressions_last_7d` | number | Impressions posts 7 jours |
-| `followers` | number | Nombre de followers |
-| `profile_views_90d` | number | Vues profil 90 jours |
-| `search_appearances_last_week` | number | Apparitions recherches semaine |
-
-### Table `posts` (Posts individuels)
-
-| Champ | Type | Description |
-|-------|------|-------------|
-| `type` | string | "post" |
-| `company_id` | string | ID entreprise |
-| `team_id` | string | ID équipe |
-| `user_id` | string | Slug LinkedIn |
-| `post_id` | string | URN LinkedIn (ex: `urn:li:activity:1234567890123456`) |
-| `created_at_iso` | string | Date création ISO 8601 |
-| `impressions` | number | Nombre d'impressions |
-| `reactions` | number | Nombre de réactions |
-| `comments` | number | Nombre de commentaires |
-| `shares` | number | Nombre de partages |
-| `reshares` | number | Nombre de repartages |
-| `engagement_rate` | number | Taux d'engagement (0.0-1.0) |
-| `lang` | string | Langue détectée ("fr", "en", "other") |
-| `is_repost` | boolean | **false** (reposts ignorés) |
-
-## 🔄 Transport
-
-### Endpoint
-```
-POST WEBAPP_URL/exec?X-Secret=<SECRET>&X-Trace-Id=<uuid>
-```
-
-### Headers
-```
-Content-Type: application/json
-```
-
-### Gestion des erreurs
-- **4xx** : Pas de retry (erreur client)
-- **5xx** : Retry jusqu'à 3 fois (erreur serveur)
-- **429/503** : Quota dépassé, arrêt
-- **Timeout** : 10 secondes
-
-### Batch
-Support des envois groupés :
+### Format Dashboard (daily)
 ```json
 {
-  "items": [
-    { "type": "daily", ... },
-    { "type": "post", ... },
-    { "type": "daily", ... }
-  ]
+  "type": "daily",
+  "company_id": "c1",
+  "team_id": "t1", 
+  "user_id": "maxime-boué-896573223",
+  "date_yyyy_mm_dd": "2025-01-27",
+  "global_posts_impressions_last_7d": 153,
+  "followers": 551,
+  "profile_views_90d": 49,
+  "search_appearances_last_week": 10,
+  "source_file": "dashboard.fr.js",
+  "captured_at_iso": "2025-01-27T10:30:00.000Z",
+  "trace_id": "uuid-v4"
 }
 ```
 
-## 🛡️ Sécurité & Robustesse
+### Format Posts
+```json
+{
+  "type": "post",
+  "company_id": "c1",
+  "team_id": "t1",
+  "user_id": "maxime-boué-896573223",
+  "post_id": "urn:li:activity:7350842980666146816",
+  "created_at_iso": "2025-01-25T09:30:00Z",
+  "reactions": 42,
+  "comments": 15,
+  "shares": 2,
+  "reshares": 0,
+  "engagement_rate": 0.064,
+  "lang": "fr",
+  "is_repost": false
+}
+```
 
-### Whitelist stricte
-- Seules les 2 pages LinkedIn spécifiées
-- Aucun accès aux autres pages
-- Permissions minimales (`storage` uniquement)
+## 🔧 Architecture
 
-### Gestion des changements LinkedIn
-- Sélecteurs multiples avec fallbacks
-- Patterns regex de secours
-- Détection automatique des changements DOM
+```
+linkedin-ext/
+├── manifest.json
+├── content.js              # Router principal
+├── core/
+│   ├── config.js          # Configuration
+│   ├── transport.js       # Communication Apps Script  
+│   └── background.js      # Service Worker
+├── modules/
+│   ├── dashboard.fr.js    # Scraping dashboard
+│   └── posts.fr.js        # Scraping posts
+├── selectors/
+│   ├── dashboard.fr.json  # Sélecteurs KPI
+│   └── posts.fr.json      # Sélecteurs posts
+├── schemas/
+│   ├── daily.schema.json  # Validation dashboard
+│   └── post.schema.json   # Validation posts
+└── utils/
+    ├── uuid.js           # Générateur trace_id
+    └── normalize.js      # Normalisation données FR
+```
 
-### Normalisation
-- Nombres français (`1 234,56` → `1234.56`)
-- Dates françaises (`DD/MM/YYYY` → `YYYY-MM-DD`)
-- Pourcentages automatiques
+## 🛠️ Fonctionnalités techniques
 
-### Traçabilité
-- `trace_id` unique par envoi
-- Logs détaillés avec corrélation
-- Gestion des erreurs avec contexte
+- **Robustesse** : Sélecteurs multiples avec fallbacks
+- **Performance** : Debounce/throttle, batch des posts
+- **Traçabilité** : UUIDv4 pour chaque envoi
+- **Gestion d'erreurs** : Retry sur 5xx, pas sur 4xx
+- **Kill switch** : Désactivation rapide via config
+- **Validation** : Schémas JSON pour les payloads
 
-## 🚀 Performance
+## 📝 Logs de debug
 
-### Optimisations
-- **Debounce** : 1 seconde entre envois dashboard
-- **Throttle** : 1 seconde entre envois posts
-- **Batch** : Maximum 10 posts par envoi
-- **Retry intelligent** : Backoff exponentiel
+Ouvrez les DevTools (`F12`) pour voir les logs :
+```
+[Dashboard] KPI global_posts_impressions_last_7d trouvé avec contexte: 153
+[Posts] URN trouvé sur conteneur: urn:li:activity:7350842980666146816
+[Background] Données envoyées avec succès
+```
 
-### Gestion mémoire
-- Cache des posts traités
-- Nettoyage automatique des timers
-- Pas de fuites mémoire
+## ⚠️ Limitations
 
-## 🧪 Tests
+- **Français uniquement** : Détection automatique de la langue
+- **Pages supportées** : Dashboard et posts activity seulement  
+- **Reposts ignorés** : Détection automatique
+- **Rate limiting** : Respecte les quotas Google Apps Script
 
-### Critères d'acceptation
+## 🔍 Dépannage
 
-#### Dashboard
-- ✅ Envoi **daily** conforme
-- ✅ Upsert par clé `company_id|user_id|YYYY-MM-DD`
-- ✅ Fallback user_id depuis storage
-- ✅ Validation payload avant envoi
+1. **Pas de données** : Vérifiez la langue française de LinkedIn
+2. **Erreurs 4xx** : Vérifiez WEBAPP_URL et SECRET
+3. **Sélecteurs échoués** : LinkedIn a peut-être changé sa structure
+4. **Kill switch** : Vérifiez `CONFIG.KILL_SWITCH = false`
 
-#### Posts
-- ✅ Envoi **post** pour chaque post original
-- ✅ Reposts ignorés (`is_repost=true`)
-- ✅ Batch pour posts multiples
-- ✅ Throttle respecté
-- ✅ Upsert par clé `company_id|user_id|post_id`
+## 🎯 Basé sur les tests validés
 
-#### Robustesse
-- ✅ Gestion erreurs 4xx/5xx
-- ✅ Retry réseau automatique
-- ✅ Quotas respectés
-- ✅ Kill switch fonctionnel
-- ✅ Changements DOM gérés
-
-## 🔧 Maintenance
-
-### Sélecteurs
-Les sélecteurs sont dans `selectors/*.json` et peuvent être modifiés sans rebuild :
-- Ajout de nouveaux sélecteurs
-- Patterns regex de fallback
-- Indicateurs de langue
-
-### Configuration
-- `KILL_SWITCH` pour désactiver rapidement
-- `DEBOUNCE_MS` pour ajuster la fréquence
-- `BATCH_SIZE_MAX` pour optimiser les posts
-
-### Logs
-- Console debug avec trace_id
-- Messages d'erreur clairs
-- Corrélation client/serveur
-
-## 📝 Notes importantes
-
-1. **Pas d'API LinkedIn** : Uniquement DOM scraping
-2. **Langue française** : Détection automatique, scraping FR uniquement
-3. **Idempotence** : Serveur gère les doublons
-4. **Pas de composite_key** : Rempli côté serveur
-5. **Date automatique** : Si non fournie, serveur met aujourd'hui
-
-## 🚨 Limitations
-
-- Fonctionne uniquement sur les pages whitelistées
-- Nécessite une page en français
-- Dépend de la structure DOM LinkedIn
-- Quotas Google Apps Script à respecter
-
-## 📞 Support
-
-Pour toute question ou problème :
-1. Vérifier les logs console avec trace_id
-2. Contrôler la configuration
-3. Tester la connectivité au webhook
-4. Vérifier les permissions de l'extension# linkedin-kpis-ext-
-LinkedIn Data Extension
+Cette extension utilise les sélecteurs et la logique validés lors des tests :
+- ✅ Dashboard : 4/4 KPI détectés (153, 551, 49, 10)
+- ✅ Posts : URN, métriques, timestamps fonctionnels
+- ✅ Anti-collision : Différenciation contextuelle des KPI
+- ✅ Format JSON : Conforme aux contrats Apps Script

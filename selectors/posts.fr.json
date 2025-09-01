@@ -1,7 +1,11 @@
 {
   "post_selectors": {
     "post_container": [
-      ".feed-shared-update-v2"
+      ".feed-shared-update-v2",
+      "[class*='feed-shared-update']",
+      "div[class*='update-components']",
+      "article",
+      "div[data-urn]"
     ],
     "post_id": [
       ".feed-shared-update-v2[data-urn]",
@@ -13,7 +17,7 @@
     ],
     "created_at": [
       ".update-components-actor__sub-description",
-      "span.update-components-actor__sub-description",
+      "span.update-components-actor__sub-description", 
       ".feed-shared-actor__sub-description",
       "time[datetime]",
       "time",
@@ -63,80 +67,30 @@
       "repartage",
       "partagé",
       "reposté",
-      "reposté par",
       "shared by",
-      "reposted by"
+      "reposted by",
+      "a republié ceci"
     ],
     "visual_indicators": [
       ".repost-indicator",
       ".shared-indicator",
-      "[data-test-id='repost-indicator']",
-      ".feed-shared-update-v2--repost"
+      "[class*='repost']",
+      "[class*='shared']"
     ]
   },
   "language_detection": {
     "french_indicators": [
-      "bonjour",
-      "salut",
-      "merci",
-      "très",
-      "avec",
-      "pour",
-      "dans",
-      "sur",
-      "par",
-      "de",
-      "la",
-      "le",
-      "les",
-      "un",
-      "une",
-      "et",
-      "ou",
-      "mais",
-      "donc",
-      "car"
+      "bonjour", "salut", "merci", "très", "avec", "pour", "dans", "sur", "par",
+      "de", "la", "le", "les", "un", "une", "et", "ou", "mais", "donc", "car"
     ],
     "english_indicators": [
-      "hello",
-      "hi",
-      "thanks",
-      "very",
-      "with",
-      "for",
-      "in",
-      "on",
-      "by",
-      "the",
-      "a",
-      "an",
-      "and",
-      "or",
-      "but",
-      "so",
-      "because"
+      "hello", "hi", "thanks", "very", "with", "for", "in", "on", "by",
+      "the", "a", "an", "and", "or", "but", "so", "because"
     ]
   },
   "fallback_patterns": {
-    "impressions": [
-      "\\d+\\s*impressions?",
-      "\\d+\\s*vues?",
-      "\\d+\\s*views?"
-    ],
-    "reactions": [
-      "\\d+\\s*réactions?",
-      "\\d+\\s*reactions?",
-      "\\d+\\s*likes?"
-    ],
-    "comments": [
-      "\\d+\\s*commentaires?",
-      "\\d+\\s*comments?",
-      "\\d+\\s*réponses?"
-    ],
-    "shares": [
-      "\\d+\\s*partages?",
-      "\\d+\\s*shares?",
-      "\\d+\\s*repartages?"
-    ]
+    "reactions": ["\\d+\\s*réaction", "\\d+\\s*like"],
+    "comments": ["\\d+\\s*commentaire", "\\d+\\s*comment"],
+    "shares": ["\\d+\\s*partage", "\\d+\\s*share"]
   }
 }

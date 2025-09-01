@@ -1,60 +1,93 @@
-// Service Worker Background pour l'extension LinkedIn
-importScripts('./config.js');
-importScripts('./transport.js');
+// Background Service Worker - Gestion des communications
+importScripts('config.js', 'transport.js');
 
-const transport = new Transport();
+// Instance du transport
+let transport = null;
+
+// Initialisation
+chrome.runtime.onStartup.addListener(initialize);
+chrome.runtime.onInstalled.addListener(initialize);
+
+function initialize() {
+  console.debug('[Background] Extension LinkedIn initialisée');
+  transport = new Transport(CONFIG);
+}
 
 // Écoute des messages des content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.debug('[Background] Message reçu:', message);
-
   if (message.type === 'TRANSPORT_POST') {
-    handleTransportPost(message, sendResponse);
-    return true; // Indique que la réponse sera asynchrone
+    handleTransportPost(message, sender, sendResponse);
+    return true; // Réponse asynchrone
   }
-
-  sendResponse({ ok: false, error: 'Type de message non reconnu' });
+  
+  if (message.type === 'GET_CONFIG') {
+    sendResponse({ config: CONFIG });
+    return false;
+  }
 });
 
-// Gestion des envois de données
-async function handleTransportPost(message, sendResponse) {
+/**
+ * Gestion des envois de données
+ */
+async function handleTransportPost(message, sender, sendResponse) {
+  const { payload, trace_id } = message;
+  
+  console.debug('[Background] Envoi de données', { 
+    type: payload.type || 'unknown',
+    trace_id,
+    tab: sender.tab?.id 
+  });
+
   try {
-    const { payload, trace_id } = message;
-    
-    if (!payload) {
-      sendResponse({ ok: false, error: 'Payload manquant', trace_id });
-      return;
+    // Initialiser transport si nécessaire
+    if (!transport) {
+      transport = new Transport(CONFIG);
     }
 
-    console.debug(`[Background] Envoi vers ${CONFIG.WEBAPP_URL}`, { payload, trace_id });
-
-    // Envoi via transport
+    // Envoi des données
     const result = await transport.postJSON(payload, trace_id);
     
     if (result.ok) {
-      console.debug(`[Background] Succès (${trace_id}):`, result.res);
-      sendResponse({ ok: true, res: result.res, trace_id });
+      console.debug('[Background] Données envoyées avec succès', { 
+        trace_id, 
+        response: result.res 
+      });
     } else {
-      console.error(`[Background] Erreur (${trace_id}):`, result.error);
-      sendResponse({ ok: false, error: result.error, trace_id });
+      console.error('[Background] Échec envoi données', { 
+        trace_id, 
+        error: result.error 
+      });
     }
 
+    sendResponse({
+      ok: result.ok,
+      res: result.res,
+      error: result.error,
+      trace_id
+    });
+
   } catch (error) {
-    console.error('[Background] Erreur fatale:', error);
-    sendResponse({ 
-      ok: false, 
+    console.error('[Background] Exception lors de l\'envoi', { 
       error: error.message, 
-      trace_id: message.trace_id 
+      trace_id 
+    });
+    
+    sendResponse({
+      ok: false,
+      error: error.message,
+      trace_id
     });
   }
 }
 
-// Installation du service worker
-chrome.runtime.onInstalled.addListener(() => {
-  console.debug('[Background] Extension installée');
+// Gestion des erreurs non capturées
+self.addEventListener('error', (event) => {
+  console.error('[Background] Erreur non capturée:', event.error);
 });
 
-// Gestion des erreurs
-chrome.runtime.onStartup.addListener(() => {
-  console.debug('[Background] Extension démarrée');
+self.addEventListener('unhandledrejection', (event) => {
+  console.error('[Background] Promise rejetée:', event.reason);
+  event.preventDefault();
 });
+
+console.debug('[Background] Service worker chargé');

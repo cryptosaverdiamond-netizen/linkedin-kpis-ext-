@@ -1,6 +1,9 @@
 // Utilitaires de normalisation pour les données françaises
 const Normalize = {
-  // Normalisation des nombres français
+  /**
+   * Normalisation des nombres français
+   * Gère: "1 234", "1,234", "1.234", "1,5" etc.
+   */
   number(value) {
     if (typeof value === 'number') return value;
     if (!value || typeof value !== 'string') return 0;
@@ -8,86 +11,136 @@ const Normalize = {
     // Supprimer les espaces et caractères non numériques sauf séparateurs
     let cleaned = value.replace(/\s/g, '').replace(/[^\d.,]/g, '');
     
-    // Gestion des séparateurs français (virgule pour décimaux, espace pour milliers)
-    if (cleaned.includes(',')) {
-      // Format français: 1 234,56
-      cleaned = cleaned.replace(/\s/g, '').replace(',', '.');
-    } else if (cleaned.includes('.')) {
-      // Format international: 1,234.56 ou 1.234
-      const parts = cleaned.split('.');
-      if (parts.length > 2) {
-        // Plusieurs points = format milliers
-        cleaned = parts.slice(0, -1).join('') + '.' + parts[parts.length - 1];
+    if (!cleaned) return 0;
+    
+    // Gestion des séparateurs français
+    if (cleaned.includes(',') && cleaned.includes('.')) {
+      // Format: 1.234,56 (européen) ou 1,234.56 (américain)
+      const lastComma = cleaned.lastIndexOf(',');
+      const lastDot = cleaned.lastIndexOf('.');
+      
+      if (lastComma > lastDot) {
+        // Format européen: 1.234,56
+        cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+      } else {
+        // Format américain: 1,234.56
+        cleaned = cleaned.replace(/,/g, '');
       }
+    } else if (cleaned.includes(',')) {
+      // Seulement des virgules
+      const commaCount = (cleaned.match(/,/g) || []).length;
+      if (commaCount === 1 && cleaned.length - cleaned.lastIndexOf(',') <= 3) {
+        // Probablement décimal: 1,5
+        cleaned = cleaned.replace(',', '.');
+      } else {
+        // Probablement milliers: 1,234
+        cleaned = cleaned.replace(/,/g, '');
+      }
+    } else if (cleaned.includes('.')) {
+      // Seulement des points - laisser tel quel
     }
     
     const result = parseFloat(cleaned);
     return isNaN(result) ? 0 : result;
   },
 
-  // Normalisation des dates françaises
+  /**
+   * Normalisation des dates françaises vers ISO
+   */
   date(value) {
     if (!value) return null;
     
     // Si c'est déjà une date ISO
-    if (value.includes('T') && value.includes('Z')) {
+    if (typeof value === 'string' && value.includes('T') && value.includes('Z')) {
       return value;
     }
     
-    // Format français: DD/MM/YYYY ou DD-MM-YYYY
-    const frenchDateMatch = value.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
-    if (frenchDateMatch) {
-      const [, day, month, year] = frenchDateMatch;
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    // Patterns de dates LinkedIn
+    const patterns = [
+      /(\d+)\s*(mois|jour|semaine|an|minute|heure)s?\s*•?/i,
+      /Il y a\s+(\d+)\s*(mois|jour|semaine|an|minute|heure)s?/i,
+      /(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/,
+    ];
+    
+    for (const pattern of patterns) {
+      const match = value.match(pattern);
+      if (match) {
+        // Pour l'instant, retourner la date actuelle pour les dates relatives
+        // TODO: Calculer la vraie date basée sur la période
+        return new Date().toISOString();
+      }
     }
     
-    // Format américain: MM/DD/YYYY
-    const usDateMatch = value.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-    if (usDateMatch) {
-      const [, month, day, year] = usDateMatch;
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    // Essayer de parser directement
+    try {
+      const date = new Date(value);
+      if (!isNaN(date.getTime())) {
+        return date.toISOString();
+      }
+    } catch (e) {
+      // Ignore
     }
     
     return null;
   },
 
-  // Normalisation des pourcentages
+  /**
+   * Normalisation des pourcentages
+   */
   percentage(value) {
-    if (typeof value === 'number') return value / 100;
+    if (typeof value === 'number') {
+      return value < 1 ? value : value / 100;
+    }
     
     const numValue = this.number(value);
     if (numValue === 0) return 0;
     
-    // Si c'est déjà un pourcentage (0.064)
+    // Si c'est déjà un pourcentage décimal (0.064)
     if (numValue < 1) return numValue;
     
-    // Si c'est un pourcentage entier (6.4)
-    if (numValue < 100) return numValue / 100;
-    
-    // Si c'est un pourcentage avec % (6.4%)
+    // Si c'est un pourcentage entier (6.4%)
     return numValue / 100;
   },
 
-  // Normalisation des textes
+  /**
+   * Normalisation des textes
+   */
   text(value) {
     if (!value) return '';
     return String(value).trim();
   },
 
-  // Vérification si c'est un repost
+  /**
+   * Vérification si c'est un repost
+   */
   isRepost(element) {
     if (!element) return false;
     
     const text = element.textContent.toLowerCase();
     const repostIndicators = [
       'repost',
-      'repartage',
+      'repartage', 
       'partagé',
       'reposté',
-      'reposté par'
+      'reposté par',
+      'shared by',
+      'reposted by',
+      'a republié ceci'
     ];
     
     return repostIndicators.some(indicator => text.includes(indicator));
+  },
+
+  /**
+   * Date actuelle au format YYYY-MM-DD (timezone Europe/Paris)
+   */
+  getCurrentDateFR() {
+    const now = new Date();
+    // TODO: Gérer correctement la timezone Europe/Paris
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 };
 
