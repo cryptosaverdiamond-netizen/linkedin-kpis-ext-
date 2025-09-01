@@ -4,12 +4,12 @@
       ".feed-shared-update-v2"
     ],
     "post_id": [
+      ".feed-shared-update-v2[data-urn]",
       "[data-urn*='urn:li:activity:']",
       "div[data-urn]",
       "article[data-urn]",
       "[href*='urn:li:activity:']",
-      "[id*='urn:li:activity:']",
-      ".feed-shared-update-v2[data-urn]"
+      "[id*='urn:li:activity:']"
     ],
     "created_at": [
       "[class*=\"date\"]",
