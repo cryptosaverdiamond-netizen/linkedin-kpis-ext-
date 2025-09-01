@@ -147,18 +147,40 @@ function extractKPIWithContext(kpiKey, keywords) {
     const value = extractNumericValue(element);
     if (value === null || value === 0) continue;
     
-    // Analyser le contexte autour de l'élément
-    const container = element.closest('div, section, article') || element.parentElement;
-    if (!container) continue;
+    // Analyser le contexte autour de l'élément - utiliser le parent direct d'abord
+    const parentText = element.parentElement?.textContent?.toLowerCase() || '';
+    const containerText = element.closest('div, section, article')?.textContent?.toLowerCase() || '';
     
-    const contextText = container.textContent.toLowerCase();
+    // Vérifier d'abord le parent direct, puis le conteneur
+    const contexts = [parentText, containerText];
     
-    // Vérifier si le contexte contient les mots-clés du KPI
-    const hasKeyword = keywords.some(keyword => contextText.includes(keyword.toLowerCase()));
-    
-    if (hasKeyword) {
-      console.debug(`[Dashboard] KPI ${kpiKey} trouvé par contexte:`, value, contextText.substring(0, 100));
-      return value;
+    for (const contextText of contexts) {
+      if (!contextText) continue;
+      
+      // Vérifier si le contexte contient les mots-clés du KPI
+      const hasKeyword = keywords.some(keyword => contextText.includes(keyword.toLowerCase()));
+      
+      if (hasKeyword) {
+        // Vérification supplémentaire pour éviter les faux positifs
+        if (kpiKey === 'profile_views_90d') {
+          // Pour profile views, s'assurer qu'on n'a pas "impressions" dans le contexte
+          if (contextText.includes('impression')) {
+            console.debug(`[Dashboard] Profile views - skip car contient "impressions":`, contextText.substring(0, 100));
+            continue;
+          }
+        }
+        
+        if (kpiKey === 'global_posts_impressions_last_7d') {
+          // Pour impressions, s'assurer qu'on a bien "impressions" ou "posts"
+          if (!contextText.includes('impression') && !contextText.includes('post')) {
+            console.debug(`[Dashboard] Impressions - skip car pas de "impressions":`, contextText.substring(0, 100));
+            continue;
+          }
+        }
+        
+        console.debug(`[Dashboard] KPI ${kpiKey} trouvé par contexte:`, value, contextText.substring(0, 100));
+        return value;
+      }
     }
   }
   
