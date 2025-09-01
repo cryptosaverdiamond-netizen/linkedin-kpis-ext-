@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "LinkedIn Data Scraper",
+  "version": "1.0.0",
+  "description": "Extension LinkedIn pour scraper dashboard KPI et posts (FR uniquement)",
+  
+  "permissions": [
+    "storage"
+  ],
+  
+  "host_permissions": [
+    "https://www.linkedin.com/in/*/recent-activity/all/*",
+    "https://www.linkedin.com/dashboard/*",
+    "https://script.google.com/*",
+    "https://script.googleusercontent.com/*"
+  ],
+  
+  "background": {
+    "service_worker": "core/background.js"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/dashboard/*",
+        "https://www.linkedin.com/in/*/recent-activity/all/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "core/*.js",
+        "modules/*.js", 
+        "selectors/*.json",
+        "schemas/*.json",
+        "utils/*.js"
+      ],
+      "matches": ["https://www.linkedin.com/*"]
+    }
+  ]
+}

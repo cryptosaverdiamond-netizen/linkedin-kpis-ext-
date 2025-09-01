@@ -1,94 +1,72 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
+  "required": ["type", "company_id", "team_id", "user_id", "post_id"],
   "properties": {
     "type": {
       "type": "string",
-      "enum": ["post"],
-      "description": "Type de données - doit être 'post'"
+      "enum": ["post"]
     },
     "company_id": {
       "type": "string",
-      "minLength": 1,
-      "description": "ID de l'entreprise"
+      "minLength": 1
     },
     "team_id": {
       "type": "string",
-      "minLength": 1,
-      "description": "ID de l'équipe"
+      "minLength": 1
     },
     "user_id": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Slug LinkedIn de l'utilisateur"
+      "type": "string", 
+      "minLength": 1
     },
     "post_id": {
       "type": "string",
-      "minLength": 1,
-      "description": "URN LinkedIn du post"
+      "pattern": "^urn:li:activity:\\d+$"
     },
     "created_at_iso": {
       "type": "string",
-      "format": "date-time",
-      "description": "Date de création ISO 8601"
+      "format": "date-time"
     },
     "impressions": {
       "type": "number",
-      "minimum": 0,
-      "description": "Nombre d'impressions"
+      "minimum": 0
     },
     "reactions": {
       "type": "number",
-      "minimum": 0,
-      "description": "Nombre de réactions"
+      "minimum": 0
     },
     "comments": {
       "type": "number",
-      "minimum": 0,
-      "description": "Nombre de commentaires"
+      "minimum": 0
     },
     "shares": {
-      "type": "number",
-      "minimum": 0,
-      "description": "Nombre de partages"
+      "type": "number", 
+      "minimum": 0
     },
     "reshares": {
       "type": "number",
-      "minimum": 0,
-      "description": "Nombre de repartages"
+      "minimum": 0
     },
     "engagement_rate": {
       "type": "number",
       "minimum": 0,
-      "maximum": 1,
-      "description": "Taux d'engagement (0.0 à 1.0)"
+      "maximum": 1
     },
     "lang": {
       "type": "string",
-      "enum": ["fr", "en", "other"],
-      "description": "Langue détectée du post"
+      "enum": ["fr", "en", "other"]
     },
     "is_repost": {
-      "type": "boolean",
-      "description": "Indique si c'est un repost"
+      "type": "boolean"
     },
     "captured_at_iso": {
       "type": "string",
-      "format": "date-time",
-      "description": "Horodatage ISO 8601 de capture"
+      "format": "date-time"
     },
     "trace_id": {
       "type": "string",
-      "format": "uuid",
-      "description": "UUID v4 pour traçage"
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
     }
   },
-  "required": [
-    "type",
-    "company_id",
-    "team_id",
-    "user_id",
-    "post_id"
-  ],
   "additionalProperties": false
 }
