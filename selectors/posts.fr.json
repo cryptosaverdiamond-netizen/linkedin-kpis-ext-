@@ -12,13 +12,13 @@
       "[id*='urn:li:activity:']"
     ],
     "created_at": [
-      "[class*=\"date\"]",
-      ".update-components-actor__sub-description",
       "time[datetime]",
       ".update-components-actor__sub-description time",
+      "time",
       "span.update-components-actor__sub-description",
       ".feed-shared-actor__sub-description",
-      "time"
+      "[class*=\"date\"]",
+      ".update-components-actor__sub-description"
     ],
     "impressions": [
       ".social-details-social-counts__reactions-count",
