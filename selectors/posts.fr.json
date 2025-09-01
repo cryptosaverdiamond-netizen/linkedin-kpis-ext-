@@ -1,0 +1,149 @@
+{
+  "post_selectors": {
+    "post_container": [
+      "[data-test-id='post-container']",
+      ".post-container",
+      ".feed-shared-update-v2",
+      ".feed-shared-post",
+      "[data-urn*='urn:li:activity:']"
+    ],
+    "post_id": [
+      "[data-urn]",
+      "[data-test-id='post-urn']",
+      ".post-urn",
+      "a[href*='urn:li:activity:']"
+    ],
+    "created_at": [
+      "[data-test-id='post-time']",
+      ".post-time",
+      ".feed-shared-actor__sub-description",
+      ".feed-shared-actor__sub-description time",
+      "time[datetime]"
+    ],
+    "impressions": [
+      "[data-test-id='post-impressions']",
+      ".post-impressions",
+      ".impressions-count",
+      "[aria-label*='impressions']",
+      "span:contains('impressions')"
+    ],
+    "reactions": [
+      "[data-test-id='post-reactions']",
+      ".post-reactions",
+      ".reactions-count",
+      "[aria-label*='réactions']",
+      "[aria-label*='reactions']",
+      "span:contains('réactions')",
+      "span:contains('reactions')"
+    ],
+    "comments": [
+      "[data-test-id='post-comments']",
+      ".post-comments",
+      ".comments-count",
+      "[aria-label*='commentaires']",
+      "[aria-label*='comments']",
+      "span:contains('commentaires')",
+      "span:contains('comments')"
+    ],
+    "shares": [
+      "[data-test-id='post-shares']",
+      ".post-shares",
+      ".shares-count",
+      "[aria-label*='partages']",
+      "[aria-label*='shares']",
+      "span:contains('partages')",
+      "span:contains('shares')"
+    ],
+    "reshares": [
+      "[data-test-id='post-reshares']",
+      ".post-reshares",
+      ".reshares-count",
+      "[aria-label*='repartages']",
+      "[aria-label*='reshares']",
+      "span:contains('repartages')",
+      "span:contains('reshares')"
+    ]
+  },
+  "repost_indicators": {
+    "text_patterns": [
+      "repost",
+      "repartage",
+      "partagé",
+      "reposté",
+      "reposté par",
+      "shared by",
+      "reposted by"
+    ],
+    "visual_indicators": [
+      ".repost-indicator",
+      ".shared-indicator",
+      "[data-test-id='repost-indicator']",
+      ".feed-shared-update-v2--repost"
+    ]
+  },
+  "language_detection": {
+    "french_indicators": [
+      "bonjour",
+      "salut",
+      "merci",
+      "très",
+      "avec",
+      "pour",
+      "dans",
+      "sur",
+      "par",
+      "de",
+      "la",
+      "le",
+      "les",
+      "un",
+      "une",
+      "et",
+      "ou",
+      "mais",
+      "donc",
+      "car"
+    ],
+    "english_indicators": [
+      "hello",
+      "hi",
+      "thanks",
+      "very",
+      "with",
+      "for",
+      "in",
+      "on",
+      "by",
+      "the",
+      "a",
+      "an",
+      "and",
+      "or",
+      "but",
+      "so",
+      "because"
+    ]
+  },
+  "fallback_patterns": {
+    "impressions": [
+      "\\d+\\s*impressions?",
+      "\\d+\\s*vues?",
+      "\\d+\\s*views?"
+    ],
+    "reactions": [
+      "\\d+\\s*réactions?",
+      "\\d+\\s*reactions?",
+      "\\d+\\s*likes?"
+    ],
+    "comments": [
+      "\\d+\\s*commentaires?",
+      "\\d+\\s*comments?",
+      "\\d+\\s*réponses?"
+    ],
+    "shares": [
+      "\\d+\\s*partages?",
+      "\\d+\\s*shares?",
+      "\\d+\\s*repartages?"
+    ]
+  }
+}

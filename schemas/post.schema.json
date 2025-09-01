@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["post"],
+      "description": "Type de données - doit être 'post'"
+    },
+    "company_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "ID de l'entreprise"
+    },
+    "team_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "ID de l'équipe"
+    },
+    "user_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Slug LinkedIn de l'utilisateur"
+    },
+    "post_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "URN LinkedIn du post"
+    },
+    "created_at_iso": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de création ISO 8601"
+    },
+    "impressions": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Nombre d'impressions"
+    },
+    "reactions": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Nombre de réactions"
+    },
+    "comments": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Nombre de commentaires"
+    },
+    "shares": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Nombre de partages"
+    },
+    "reshares": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Nombre de repartages"
+    },
+    "engagement_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Taux d'engagement (0.0 à 1.0)"
+    },
+    "lang": {
+      "type": "string",
+      "enum": ["fr", "en", "other"],
+      "description": "Langue détectée du post"
+    },
+    "is_repost": {
+      "type": "boolean",
+      "description": "Indique si c'est un repost"
+    },
+    "captured_at_iso": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Horodatage ISO 8601 de capture"
+    },
+    "trace_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID v4 pour traçage"
+    }
+  },
+  "required": [
+    "type",
+    "company_id",
+    "team_id",
+    "user_id",
+    "post_id"
+  ],
+  "additionalProperties": false
+}
