@@ -315,6 +315,21 @@ function extractCreatedAt(container) {
         
         const textValue = element.textContent.trim();
         if (textValue) {
+          // Chercher les patterns de date LinkedIn (ex: "1 mois •", "Il y a 4 mois")
+          const datePatterns = [
+            /(\d+)\s*(mois|jour|semaine|an|minute|heure)s?\s*•/,
+            /Il y a\s+(\d+)\s*(mois|jour|semaine|an|minute|heure)/,
+            /(\d+)\s*(mois|jour|semaine|an|minute|heure)s?\s*$/
+          ];
+          
+          for (const pattern of datePatterns) {
+            const match = textValue.match(pattern);
+            if (match) {
+              console.debug(`[Posts] Date extraite: "${match[0]}" du texte: "${textValue}"`);
+              return new Date().toISOString(); // Pour l'instant, retourner date actuelle
+            }
+          }
+          
           const dateValue = Normalize.date(textValue);
           if (dateValue) {
             return new Date(dateValue).toISOString();

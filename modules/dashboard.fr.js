@@ -98,7 +98,7 @@ function extractKPIValue(kpiKey) {
   const contextKeywords = {
     'global_posts_impressions_last_7d': ['impression', 'vue', 'reach', 'portée', '7 jour', '7 day', 'impressions de posts'],
     'followers': ['follower', 'abonné', 'connection', 'connexion', 'réseau'],
-    'profile_views_90d': ['vue de profil', 'profile view', 'profil vu', '90 jour', '90 day', 'vues du profil'],
+    'profile_views_90d': ['vues du profil', 'vue de profil', 'profile view', 'profil vu'],
     'search_appearances_last_week': ['recherche', 'search', 'apparition', 'appearance', 'découverte', 'semaine', 'week']
   };
   
