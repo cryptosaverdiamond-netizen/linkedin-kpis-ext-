@@ -29,19 +29,19 @@
     ],
     "reactions": [
       ".social-details-social-counts__reactions-count",
+      ".social-details-social-counts__count-value",
       "span.social-details-social-counts__reactions-count",
-      "button[data-reaction-details] span",
       "[class*='reactions-count']",
       "[aria-label*='réactions']",
       "[class*='social-counts__reactions']"
     ],
     "comments": [
-      ".social-details-social-counts__item.social-details-social-counts__reactions.social-details-social-counts__item--height-two-x",
-      ".social-details-social-counts__comments",
+      ".social-details-social-counts__reactions-count",
+      ".social-details-social-counts__count-value", 
+      ".social-details-social-counts__item.social-details-social-counts__reactions",
       "[class*='comments-count']",
       "button[class*='comment'] span",
-      "[aria-label*='commentaires']",
-      "[aria-label*='comments']"
+      "[aria-label*='commentaires']"
     ],
     "shares": [
       ".social-details-social-counts__shares",
