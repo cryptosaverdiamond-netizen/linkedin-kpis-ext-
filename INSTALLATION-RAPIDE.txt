@@ -1,0 +1,32 @@
+🚀 INSTALLATION RAPIDE - EXTENSION LINKEDIN SCRAPER
+
+=== ÉTAPE 1: CONFIGURATION ===
+1. Ouvrir le fichier: core/config.js
+2. Remplacer ces valeurs:
+   - WEBAPP_URL: "https://script.google.com/macros/s/VOTRE_SCRIPT_ID/exec"
+   - SECRET: "VOTRE_CLÉ_SECRÈTE"
+   - COMPANY_ID: "votre_entreprise"
+   - TEAM_ID: "votre_équipe"
+
+=== ÉTAPE 2: INSTALLATION CHROME ===
+1. Ouvrir Chrome
+2. Aller à: chrome://extensions/
+3. Activer "Mode développeur" (bouton en haut à droite)
+4. Cliquer "Charger l'extension non empaquetée"
+5. Sélectionner le dossier dézippé
+
+=== ÉTAPE 3: TEST ===
+1. Aller sur https://linkedin.com/dashboard/
+2. Ouvrir DevTools (F12) → Console
+3. Chercher les messages "[Dashboard]" ou "[Content]"
+
+=== DÉPANNAGE ===
+- Si erreur service worker: Recharger l'extension
+- Si pas de données: Vérifier config.js
+- Si pas de logs: Vérifier que la page est en français
+
+🎯 L'extension scrape automatiquement:
+- Dashboard: Impressions, followers, vues profil, recherches
+- Posts: Métriques de tous vos posts originaux
+
+📧 Support: Vérifier les logs de console pour diagnostiquer
