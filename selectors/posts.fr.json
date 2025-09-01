@@ -28,36 +28,34 @@
       "[aria-label*='impressions']"
     ],
     "reactions": [
+      "button[aria-label*='réactions']",
       ".social-details-social-counts__reactions-count",
       ".social-details-social-counts__count-value",
-      "span.social-details-social-counts__reactions-count",
-      "[class*='reactions-count']",
       "[aria-label*='réactions']",
-      "[class*='social-counts__reactions']"
+      "[class*='reactions-count']"
     ],
     "comments": [
-      ".social-details-social-counts__reactions-count",
-      ".social-details-social-counts__count-value", 
-      ".social-details-social-counts__item.social-details-social-counts__reactions",
+      "button[aria-label*='commentaires']",
+      ".social-details-social-counts__comments",
+      "[aria-label*='commentaires']",
       "[class*='comments-count']",
-      "button[class*='comment'] span",
-      "[aria-label*='commentaires']"
+      "button[class*='comment'] span"
     ],
     "shares": [
+      "button[aria-label*='republications']",
+      "button[aria-label*='partages']",
       ".social-details-social-counts__shares",
-      "[class*='shares-count']", 
-      "button[class*='share'] span",
+      "[aria-label*='republications']",
       "[aria-label*='partages']",
-      "[aria-label*='shares']",
-      "[class*='social-counts__shares']"
+      "[class*='shares-count']"
     ],
     "reshares": [
+      "button[aria-label*='republications']",
+      "button[aria-label*='repartages']",
       ".social-details-social-counts__reshares",
-      "[class*='reshares-count']",
-      "button[class*='repost'] span",
+      "[aria-label*='republications']",
       "[aria-label*='repartages']",
-      "[aria-label*='reshares']",
-      "[class*='social-counts__reshares']"
+      "[class*='reshares-count']"
     ]
   },
   "repost_indicators": {
