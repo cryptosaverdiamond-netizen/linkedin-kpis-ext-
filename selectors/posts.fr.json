@@ -1,67 +1,69 @@
 {
   "post_selectors": {
     "post_container": [
-      "[data-test-id='post-container']",
-      ".post-container",
       ".feed-shared-update-v2",
-      ".feed-shared-post",
-      "[data-urn*='urn:li:activity:']"
+      "[class*='feed-shared-update']",
+      "div[class*='update-components']",
+      "article",
+      "div[id*='ember'][class*='artdeco']",
+      "div.update-components-header"
     ],
     "post_id": [
-      "[data-urn]",
-      "[data-test-id='post-urn']",
-      ".post-urn",
-      "a[href*='urn:li:activity:']"
+      "[data-urn*='urn:li:activity:']",
+      "[data-activity-urn]",
+      "[href*='urn:li:activity:']",
+      "div[data-urn]",
+      "article[data-urn]",
+      "[id*='urn:li:activity:']"
     ],
     "created_at": [
-      "[data-test-id='post-time']",
-      ".post-time",
+      "time[datetime]",
+      ".update-components-actor__sub-description time",
+      "span.update-components-actor__sub-description",
       ".feed-shared-actor__sub-description",
-      ".feed-shared-actor__sub-description time",
-      "time[datetime]"
+      "[class*='sub-description']",
+      "time",
+      "span[class*='time']"
     ],
     "impressions": [
-      "[data-test-id='post-impressions']",
-      ".post-impressions",
-      ".impressions-count",
+      ".social-details-social-counts__reactions-count",
+      "span[class*='social-counts']",
+      "button[data-reaction-details] span",
+      "[class*='impressions']",
       "[aria-label*='impressions']",
       "span:contains('impressions')"
     ],
     "reactions": [
-      "[data-test-id='post-reactions']",
-      ".post-reactions",
-      ".reactions-count",
+      ".social-details-social-counts__reactions-count",
+      "span.social-details-social-counts__reactions-count",
+      "button[data-reaction-details] span",
+      "[class*='reactions-count']",
       "[aria-label*='réactions']",
-      "[aria-label*='reactions']",
-      "span:contains('réactions')",
-      "span:contains('reactions')"
+      "[class*='social-counts__reactions']"
     ],
     "comments": [
-      "[data-test-id='post-comments']",
-      ".post-comments",
-      ".comments-count",
+      ".social-details-social-counts__comments",
+      "[class*='comments-count']",
+      "button[class*='comment'] span",
       "[aria-label*='commentaires']",
       "[aria-label*='comments']",
-      "span:contains('commentaires')",
-      "span:contains('comments')"
+      ".social-details-social-counts__item--height-two-x"
     ],
     "shares": [
-      "[data-test-id='post-shares']",
-      ".post-shares",
-      ".shares-count",
+      ".social-details-social-counts__shares",
+      "[class*='shares-count']", 
+      "button[class*='share'] span",
       "[aria-label*='partages']",
       "[aria-label*='shares']",
-      "span:contains('partages')",
-      "span:contains('shares')"
+      "[class*='social-counts__shares']"
     ],
     "reshares": [
-      "[data-test-id='post-reshares']",
-      ".post-reshares",
-      ".reshares-count",
+      ".social-details-social-counts__reshares",
+      "[class*='reshares-count']",
+      "button[class*='repost'] span",
       "[aria-label*='repartages']",
       "[aria-label*='reshares']",
-      "span:contains('repartages')",
-      "span:contains('reshares')"
+      "[class*='social-counts__reshares']"
     ]
   },
   "repost_indicators": {

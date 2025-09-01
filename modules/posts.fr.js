@@ -87,13 +87,44 @@ async function extractPosts() {
 }
 
 function findPostContainers() {
-  const containers = [];
+  let containers = [];
   
+  // Stratégie 1: Chercher les conteneurs avec feed-shared-update-v2
+  let elements = document.querySelectorAll('.feed-shared-update-v2');
+  if (elements.length > 0) {
+    containers.push(...elements);
+    console.debug(`[Posts] Trouvé ${elements.length} conteneurs avec .feed-shared-update-v2`);
+    return containers;
+  }
+  
+  // Stratégie 2: Chercher les conteneurs avec des classes contenant 'update'
+  elements = document.querySelectorAll('div[class*="update-components"], div[class*="feed-shared"]');
+  if (elements.length > 0) {
+    containers.push(...elements);
+    console.debug(`[Posts] Trouvé ${elements.length} conteneurs avec classes update/feed`);
+    return containers;
+  }
+  
+  // Stratégie 3: Chercher par structure (header + contenu)
+  elements = document.querySelectorAll('div.update-components-header');
+  if (elements.length > 0) {
+    elements.forEach(header => {
+      const container = header.closest('div[id*="ember"], article, div[class*="artdeco"]');
+      if (container && !containers.includes(container)) {
+        containers.push(container);
+      }
+    });
+    console.debug(`[Posts] Trouvé ${containers.length} conteneurs par structure header`);
+    return containers;
+  }
+  
+  // Fallback: essayer les sélecteurs originaux
   for (const selector of selectors.post_selectors.post_container) {
     try {
-      const elements = document.querySelectorAll(selector);
+      elements = document.querySelectorAll(selector);
       if (elements.length > 0) {
         containers.push(...elements);
+        console.debug(`[Posts] Fallback: Trouvé ${elements.length} avec ${selector}`);
         break;
       }
     } catch (error) {
@@ -143,15 +174,56 @@ async function extractPostData(container) {
 }
 
 function extractPostId(container) {
+  // Stratégie 1: Chercher data-urn directement sur le conteneur
+  let urn = container.getAttribute('data-urn');
+  if (urn && urn.includes('urn:li:activity:')) {
+    console.debug(`[Posts] URN trouvé sur conteneur:`, urn);
+    return urn;
+  }
+  
+  // Stratégie 2: Chercher dans tous les éléments enfants avec data-urn
+  const urnElements = container.querySelectorAll('[data-urn]');
+  for (const element of urnElements) {
+    urn = element.getAttribute('data-urn');
+    if (urn && urn.includes('urn:li:activity:')) {
+      console.debug(`[Posts] URN trouvé dans enfant:`, urn);
+      return urn;
+    }
+  }
+  
+  // Stratégie 3: Chercher dans les liens href
+  const linkElements = container.querySelectorAll('a[href*="urn:li:activity:"]');
+  for (const link of linkElements) {
+    const href = link.getAttribute('href');
+    const match = href.match(/urn:li:activity:[0-9]+/);
+    if (match) {
+      console.debug(`[Posts] URN trouvé dans href:`, match[0]);
+      return match[0];
+    }
+  }
+  
+  // Stratégie 4: Chercher dans les IDs
+  const elementsWithId = container.querySelectorAll('[id*="urn:li:activity:"]');
+  for (const element of elementsWithId) {
+    const id = element.id;
+    const match = id.match(/urn:li:activity:[0-9]+/);
+    if (match) {
+      console.debug(`[Posts] URN trouvé dans ID:`, match[0]);
+      return match[0];
+    }
+  }
+  
+  // Fallback: utiliser les sélecteurs originaux
   for (const selector of selectors.post_selectors.post_id) {
     try {
       const element = container.querySelector(selector);
       if (element) {
-        const urn = element.getAttribute('data-urn') || 
-                   element.getAttribute('href') ||
-                   element.textContent;
+        urn = element.getAttribute('data-urn') || 
+             element.getAttribute('href') ||
+             element.textContent;
         
         if (urn && urn.includes('urn:li:activity:')) {
+          console.debug(`[Posts] URN trouvé avec sélecteur ${selector}:`, urn);
           return urn;
         }
       }
@@ -160,6 +232,7 @@ function extractPostId(container) {
     }
   }
   
+  console.warn(`[Posts] URN non trouvé pour le conteneur`, container);
   return null;
 }
 
