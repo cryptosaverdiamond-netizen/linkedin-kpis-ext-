@@ -10,6 +10,9 @@ function generateUUIDv4() {
 // Export pour modules
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { generateUUIDv4 };
-} else {
+} else if (typeof window !== 'undefined') {
   window.generateUUIDv4 = generateUUIDv4;
+} else {
+  // Service Worker environment
+  globalThis.generateUUIDv4 = generateUUIDv4;
 }

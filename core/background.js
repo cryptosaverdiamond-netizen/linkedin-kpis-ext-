@@ -1,5 +1,5 @@
 // Background Service Worker - Gestion des communications
-importScripts('config.js', 'transport.js');
+importScripts('./config.js', './transport.js');
 
 // Instance du transport
 let transport = null;
@@ -91,3 +91,20 @@ self.addEventListener('unhandledrejection', (event) => {
 });
 
 console.debug('[Background] Service worker chargé');
+
+// Test temporaire de chargement des modules
+try {
+  console.log('=== TEST DE CHARGEMENT DES MODULES ===');
+  console.log('1. CONFIG disponible:', typeof CONFIG !== 'undefined' ? '✅' : '❌');
+  console.log('2. Transport disponible:', typeof Transport !== 'undefined' ? '✅' : '❌');
+  
+  if (typeof CONFIG !== 'undefined' && typeof Transport !== 'undefined') {
+    const testTransport = new Transport(CONFIG);
+    console.log('3. Transport initialisé: ✅');
+  } else {
+    console.log('3. Transport non initialisé: ❌');
+  }
+  console.log('=== FIN DES TESTS ===');
+} catch (error) {
+  console.error('[Background] Erreur test chargement:', error);
+}
