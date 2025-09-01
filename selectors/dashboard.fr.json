@@ -1,0 +1,82 @@
+{
+  "kpi_selectors": {
+    "global_posts_impressions_last_7d": [
+      "[data-test-id='global-posts-impressions-last-7d']",
+      "[data-test-id='impressions-last-7d']",
+      ".impressions-last-7d",
+      ".global-impressions",
+      "[aria-label*='impressions sur 7 jours']",
+      "[aria-label*='impressions globales']"
+    ],
+    "followers": [
+      "[data-test-id='followers-count']",
+      "[data-test-id='followers']",
+      ".followers-count",
+      ".followers",
+      "[aria-label*='followers']",
+      "[aria-label*='abonnés']",
+      "span:contains('followers')",
+      "span:contains('abonnés')"
+    ],
+    "profile_views_90d": [
+      "[data-test-id='profile-views-90d']",
+      "[data-test-id='profile-views']",
+      ".profile-views-90d",
+      ".profile-views",
+      "[aria-label*='vues de profil sur 90 jours']",
+      "[aria-label*='vues de profil']",
+      "span:contains('vues de profil')",
+      "span:contains('profile views')"
+    ],
+    "search_appearances_last_week": [
+      "[data-test-id='search-appearances-last-week']",
+      "[data-test-id='search-appearances']",
+      ".search-appearances-last-week",
+      ".search-appearances",
+      "[aria-label*='apparitions dans les recherches']",
+      "[aria-label*='recherches']",
+      "span:contains('apparitions dans les recherches')",
+      "span:contains('search appearances')"
+    ]
+  },
+  "fallback_selectors": {
+    "impressions_pattern": [
+      "\\d+\\s*impressions?",
+      "\\d+\\s*vues?",
+      "\\d+\\s*views?"
+    ],
+    "followers_pattern": [
+      "\\d+\\s*followers?",
+      "\\d+\\s*abonnés?",
+      "\\d+\\s*connections?"
+    ],
+    "profile_views_pattern": [
+      "\\d+\\s*vues?\\s*de\\s*profil",
+      "\\d+\\s*profile\\s*views?",
+      "\\d+\\s*vues?"
+    ],
+    "search_pattern": [
+      "\\d+\\s*apparitions?\\s*dans\\s*les\\s*recherches",
+      "\\d+\\s*search\\s*appearances?",
+      "\\d+\\s*recherches?"
+    ]
+  },
+  "text_indicators": {
+    "french_keywords": [
+      "impressions",
+      "followers",
+      "vues de profil",
+      "apparitions dans les recherches",
+      "abonnés",
+      "recherches"
+    ],
+    "english_keywords": [
+      "impressions",
+      "followers", 
+      "profile views",
+      "search appearances",
+      "connections",
+      "searches"
+    ]
+  }
+}

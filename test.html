@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Extension LinkedIn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { border-color: #4CAF50; background-color: #f1f8e9; }
+        .error { border-color: #f44336; background-color: #ffebee; }
+        .info { border-color: #2196F3; background-color: #e3f2fd; }
+        button {
+            background: #0077b5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #005885; }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Extension LinkedIn Data Scraper</h1>
+        
+        <div class="test-section info">
+            <h3>📋 Instructions</h3>
+            <p>Cette page permet de tester les composants de l'extension LinkedIn avant installation dans Chrome.</p>
+            <ol>
+                <li>Charger l'extension dans Chrome (chrome://extensions/)</li>
+                <li>Recharger cette page</li>
+                <li>Utiliser les boutons de test ci-dessous</li>
+                <li>Vérifier les logs dans la console (F12)</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Tests des composants</h3>
+            <button onclick="testUUID()">Test UUID</button>
+            <button onclick="testNormalize()">Test Normalisation</button>
+            <button onclick="testConfig()">Test Configuration</button>
+            <button onclick="clearLogs()">Effacer Logs</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Logs de test</h3>
+            <div id="logs" class="log"></div>
+        </div>
+
+        <div class="test-section info">
+            <h3>🎯 Pages LinkedIn supportées</h3>
+            <ul>
+                <li><strong>Dashboard:</strong> <code>https://www.linkedin.com/dashboard/</code></li>
+                <li><strong>Posts:</strong> <code>https://www.linkedin.com/in/&lt;slug&gt;/recent-activity/all/</code></li>
+            </ul>
+            <p><em>L'extension ne fonctionne que sur ces pages spécifiques.</em></p>
+        </div>
+
+        <div class="test-section">
+            <h3>📱 Installation</h3>
+            <p>Pour installer l'extension :</p>
+            <ol>
+                <li>Exécuter <code>./install.sh</code> pour configurer</li>
+                <li>Aller dans <code>chrome://extensions/</code></li>
+                <li>Activer le "Mode développeur"</li>
+                <li>Cliquer "Charger l'extension non empaquetée"</li>
+                <li>Sélectionner le dossier de l'extension</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Fonction de logging
+        function log(message, type = 'info') {
+            const logsDiv = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span style="color: #666;">[${timestamp}]</span> ${message}`;
+            logsDiv.appendChild(logEntry);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        // Test UUID
+        function testUUID() {
+            try {
+                if (typeof generateUUIDv4 === 'function') {
+                    const uuid = generateUUIDv4();
+                    log(`✅ UUID généré: ${uuid}`, 'success');
+                } else {
+                    log('❌ Fonction generateUUIDv4 non disponible', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erreur UUID: ${error.message}`, 'error');
+            }
+        }
+
+        // Test normalisation
+        function testNormalize() {
+            try {
+                if (typeof Normalize !== 'undefined') {
+                    const tests = [
+                        { input: '1 234,56', expected: 1234.56, type: 'number' },
+                        { input: '25/12/2024', expected: '2024-12-25', type: 'date' },
+                        { input: '6,4%', expected: 0.064, type: 'percentage' }
+                    ];
+
+                    tests.forEach(test => {
+                        let result;
+                        switch (test.type) {
+                            case 'number':
+                                result = Normalize.number(test.input);
+                                break;
+                            case 'date':
+                                result = Normalize.date(test.input);
+                                break;
+                            case 'percentage':
+                                result = Normalize.percentage(test.input);
+                                break;
+                        }
+                        
+                        if (result === test.expected) {
+                            log(`✅ ${test.type}: "${test.input}" → ${result}`, 'success');
+                        } else {
+                            log(`❌ ${test.type}: "${test.input}" → ${result} (attendu: ${test.expected})`, 'error');
+                        }
+                    });
+                } else {
+                    log('❌ Objet Normalize non disponible', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erreur normalisation: ${error.message}`, 'error');
+            }
+        }
+
+        // Test configuration
+        function testConfig() {
+            try {
+                if (typeof CONFIG !== 'undefined') {
+                    log('✅ Configuration chargée:', 'success');
+                    log(`   - WEBAPP_URL: ${CONFIG.WEBAPP_URL ? '✅ Configuré' : '❌ Non configuré'}`);
+                    log(`   - SECRET: ${CONFIG.SECRET ? '✅ Configuré' : '❌ Non configuré'}`);
+                    log(`   - COMPANY_ID: ${CONFIG.COMPANY_ID}`);
+                    log(`   - TEAM_ID: ${CONFIG.TEAM_ID}`);
+                    log(`   - TIMEOUT_MS: ${CONFIG.TIMEOUT_MS}ms`);
+                    log(`   - KILL_SWITCH: ${CONFIG.KILL_SWITCH}`);
+                } else {
+                    log('❌ Configuration non chargée', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erreur configuration: ${error.message}`, 'error');
+            }
+        }
+
+        // Effacer les logs
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+            log('🧹 Logs effacés');
+        }
+
+        // Test automatique au chargement
+        window.addEventListener('load', () => {
+            log('🚀 Page de test chargée');
+            log('📝 Extension LinkedIn Data Scraper - Test des composants');
+            
+            // Vérifier si l'extension est chargée
+            if (typeof chrome !== 'undefined' && chrome.runtime) {
+                log('✅ Extension Chrome détectée');
+            } else {
+                log('❌ Extension Chrome non détectée - Charger l\'extension d\'abord');
+            }
+        });
+    </script>
+</body>
+</html>

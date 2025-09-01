@@ -1,0 +1,42 @@
+# Extension LinkedIn - Fichiers à ignorer
+
+# Configuration avec clés sensibles
+core/config.js
+
+# Fichiers de build et packaging
+*.crx
+*.pem
+*.zip
+dist/
+build/
+
+# Logs et fichiers temporaires
+*.log
+*.tmp
+*.temp
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Fichiers d'éditeur
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dépendances (si ajoutées plus tard)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Fichiers de test
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Fichiers de backup
+*.bak
+*.backup
+*~

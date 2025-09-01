@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "LinkedIn Data Scraper",
+  "version": "1.0.0",
+  "description": "Extension pour scraper les données LinkedIn et les envoyer vers Google Apps Script",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://www.linkedin.com/in/*/recent-activity/all/*",
+    "https://www.linkedin.com/dashboard/*",
+    "https://script.google.com/*",
+    "https://script.googleusercontent.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/in/*/recent-activity/all/*",
+        "https://www.linkedin.com/dashboard/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "background": {
+    "service_worker": "core/background.js"
+  }
+}
